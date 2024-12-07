@@ -149,7 +149,7 @@ function DashboardContent() {
         >
           <Button
             onClick={submitVote}
-            disabled={!selectedOption || hasVoted}
+            disabled={!selectedOption || !!hasVoted}
             className="w-full max-w-md bg-gradient-to-r from-purple-500 to-pink-500 text-white"
           >
             Vote Now
