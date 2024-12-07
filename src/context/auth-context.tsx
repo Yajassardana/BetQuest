@@ -15,10 +15,12 @@ import {
   getDoc,
   DocumentData
 } from 'firebase/firestore'
+import {Player} from '@/types/game'
 
 interface AuthContextType {
   user: User | null;
-  userData: DocumentData | null;
+  userData: Player | null;
+  setUserData: React.Dispatch<React.SetStateAction<Player | null>>
   signup: (email: string, password: string, userData?: any) => Promise<any>;
   login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
@@ -32,17 +34,35 @@ export function useAuth() {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [userData, setUserData] = useState<DocumentData | null>(null)
+  const [userData, setUserData] = useState<Player | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Fetch user data from Firestore
   const fetchUserData = async (uid: string) => {
     const userDoc = await getDoc(doc(db, 'users', uid))
     if (userDoc.exists()) {
-      setUserData(userDoc.data())
+      const { username, email, contestsWon, contestsLost, tokens, streak, previousResults, walletAddress} = userDoc.data()
+      setUserData({
+        username,
+        email,
+        contestsWon,
+        contestsLost,
+        tokens,
+        streak,
+        previousResults,
+        walletAddress,
+        uid : user?.uid
+      })
     }
   }
-
+  // username : string,
+  // email : string,
+  // contestsWon : number,
+  // contestsLost : number,
+  // tokens : number,
+  // streak : number,
+  // previousResults : Array<boolean>,
+  // walletAddress : string
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user)
@@ -65,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ...userData,
       createdAt: new Date().toISOString(),
     })
+    await fetchUserData(user.uid)
     return user
   }
 
@@ -82,6 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = {
     user,
     userData,
+    setUserData,
     signup,
     login,
     logout

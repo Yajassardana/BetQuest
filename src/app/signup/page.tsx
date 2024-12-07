@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import {useAuth} from "@/context/auth-context"
 import Link from 'next/link'
-import { User } from "@/types/game"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -24,7 +23,7 @@ export default function LoginPage() {
       email,
       contestsWon: 0,
       contestsLost: 0,
-      tokens: 0,
+      tokens: 1000,
       streak: 0,
       previousResults: [],
       walletAddress: ""
@@ -94,7 +93,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white"
             >
-              Sign in
+              Sign up
             </Button>
           </div>
           <div>Already have an account? <Link href = "/login" className="underline">Click here to log-in</Link></div>
