@@ -1,10 +1,10 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useGame } from "@/context/game-context"
+import { useAuth } from "@/context/auth-context"
 
 export function Streak() {
-  const { streak } = useGame()
+  const { userData } = useAuth()
 
   return (
     <motion.div
@@ -14,7 +14,7 @@ export function Streak() {
     >
       <h3 className="text-sm font-medium text-muted-foreground">Streak</h3>
       <div className="flex gap-1">
-        {streak.map((result, index) => (
+        {userData?.previousResults.map((result, index) => (
           <motion.div
             key={index}
             initial={{ scale: 0 }}

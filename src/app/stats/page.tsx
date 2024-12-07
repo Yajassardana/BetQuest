@@ -4,10 +4,10 @@ import { motion } from "framer-motion"
 import { Header } from "@/components/header"
 import { BottomNav } from "@/components/bottom-nav"
 import { GameProvider } from "@/context/game-context"
-import { useGame } from "@/context/game-context"
+import { useAuth } from "@/context/auth-context"
 
 function StatsContent() {
-  const { points, streak } = useGame()
+  const { userData } = useAuth()
 
   return (
     <div className="flex min-h-screen flex-col pb-20">
@@ -22,12 +22,12 @@ function StatsContent() {
           <h2 className="text-2xl font-bold">Your Stats</h2>
           <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 rounded-lg">
             <h3 className="text-xl font-semibold mb-2">Total Points</h3>
-            <p className="text-3xl font-bold">{points}</p>
+            <p className="text-3xl font-bold">{userData?.tokens}</p>
           </div>
           <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 rounded-lg">
             <h3 className="text-xl font-semibold mb-2">Current Streak</h3>
             <div className="flex gap-1">
-              {streak.map((result, index) => (
+              {userData?.previousResults.map((result, index) => (
                 <div
                   key={index}
                   className={`h-4 w-4 rounded-sm ${

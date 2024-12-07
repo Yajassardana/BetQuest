@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { Challenge, GameContextType, GameState } from "@/types/game"
+import { Challenge, GameContextType, GameState, Intervals } from "@/types/game"
 
 const mockChallenges: Challenge[] = [
   {
@@ -19,7 +19,8 @@ const mockChallenges: Challenge[] = [
         image: "/images/kohli.jpg",
       },
     ],
-    duration: 60,
+    winnerId: "1",
+    duration: 15,
   },
   {
     id: "2",
@@ -36,108 +37,76 @@ const mockChallenges: Challenge[] = [
         image: "/images/kohli.jpg",
       },
     ],
-    duration: 60,
+    winnerId: "2",
+    duration: 15,
   },
 ]
 
+const intervals : Intervals = {
+  challenge: 15,
+  break: 5
+} 
+
+
+// username : string,
+// email : string,
+// contestsWon : number,
+// contestsLost : number,
+// tokens : number,
+// streak : number,
+// previousResults : Array<boolean>,
+// walletAddress : string
 const initialState: GameState = {
-  points: 1000,
-  username: "player1",
+  tokens:  0,
+  username: '',
+  currentChallengeId : 0,
   currentChallenge: mockChallenges[0],
   selectedOption: null,
   hasVoted: false,
-  timer: 10,
-  streak: Array(10).fill('pending'),
+  timer: intervals.challenge,
+  streak: [],
   gamePhase: 'voting',
-  resultTimer: 5,
+  resultTimer: intervals.break,
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined)
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<GameState>(initialState)
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout
-
-    if (state.timer > 0 && state.gamePhase === 'voting') {
-      interval = setInterval(() => {
-        setState(prev => ({ ...prev, timer: prev.timer - 1 }))
-      }, 1000)
-    } else if (state.timer === 0 && state.gamePhase === 'voting') {
-      if (state.hasVoted) {
-        const won = Math.random() > 0.5
-        const newStreak = [...state.streak]
-        const firstPendingIndex = newStreak.findIndex(s => s === 'pending')
-        if (firstPendingIndex !== -1) {
-          newStreak[firstPendingIndex] = won ? 'win' : 'loss'
-        }
-        
-        setState(prev => ({
-          ...prev,
-          gamePhase: 'result',
-          points: won ? prev.points + 100 : prev.points - 50,
-          resultTimer: 5,
-          streak: newStreak,
-          currentChallenge: {
-            ...prev.currentChallenge!,
-            result: won ? 'win' : 'loss'
-          }
-        }))
-      } else {
-        setState(prev => ({
-          ...prev,
-          gamePhase: 'missed',
-          resultTimer: 5,
-          streak: [...prev.streak.slice(1), 'loss'],
-        }))
-      }
-    } else if (state.gamePhase === 'result' || state.gamePhase === 'missed') {
-      interval = setInterval(() => {
-        setState(prev => ({ 
-          ...prev, 
-          resultTimer: prev.resultTimer > 0 ? prev.resultTimer - 1 : 0
-        }))
-      }, 1000)
-
-      if (state.resultTimer === 0) {
-        resetChallenge()
-      }
-    }
-
-    return () => clearInterval(interval)
-  }, [state.timer, state.gamePhase, state.hasVoted, state.resultTimer])
-
+  const [gameState, setGameState] = useState<GameState>(initialState)
   const selectOption = (optionId: string) => {
-    setState(prev => ({
+    setGameState(prev => ({
       ...prev,
       selectedOption: optionId,
     }))
   }
 
   const submitVote = () => {
-    setState(prev => ({
+    setGameState(prev => ({
       ...prev,
       hasVoted: true,
     }))
   }
 
   const resetChallenge = () => {
-    setState(prev => ({
+    setGameState(prev => ({
       ...initialState,
-      points: prev.points,
+      tokens: prev.tokens,
       streak: prev.streak,
-      currentChallenge: mockChallenges[Math.floor(Math.random() * mockChallenges.length)],
+      currentChallengeId: (prev.currentChallengeId + 1)%mockChallenges.length,
+      currentChallenge: mockChallenges[(prev.currentChallengeId + 1)%mockChallenges.length],
     }))
   }
 
   return (
     <GameContext.Provider
       value={{
-        ...state,
+        ...gameState,
+        gameState,
+        intervals,
         selectOption,
         submitVote,
         resetChallenge,
+        setGameState
       }}
     >
       {children}

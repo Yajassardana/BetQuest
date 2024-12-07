@@ -30,7 +30,7 @@ function RulesContent() {
             <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 rounded-lg">
               <h3 className="text-xl font-semibold mb-2">Scoring</h3>
               <ul className="list-disc list-inside space-y-2">
-                <li>Correct prediction: +100 points</li>
+                <li>Correct prediction: +50 points</li>
                 <li>Incorrect prediction: -50 points</li>
                 <li>Streak bonus: +10 points per correct prediction in a row</li>
               </ul>

@@ -9,19 +9,26 @@ import { useRouter } from "next/navigation"
 import {useAuth} from "@/context/auth-context"
 import Link from 'next/link'
 
-
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("")
   const router = useRouter()
-  const {login, userData} = useAuth()
+  const {signup} = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const user = await login(email, password)
-    console.log("user is", userData)
-    // Here you would typically handle the login logic
-    console.log("Login attempted with:", email, password)
+    const user = await signup(email, password, {
+      username,
+      email,
+      contestsWon: 0,
+      contestsLost: 0,
+      tokens: 1000,
+      streak: 0,
+      previousResults: [],
+      walletAddress: ""
+    })
+    console.log("Signup attempted with:", email, password)
     // For now, we'll just redirect to the dashboard
     router.push("/dashboard")
   }
@@ -41,6 +48,18 @@ export default function LoginPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
+          <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                name="username"
+                autoComplete="username"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-1"
+              />
+            </div>
             <div>
               <Label htmlFor="email">Email address</Label>
               <Input
@@ -74,10 +93,10 @@ export default function LoginPage() {
               type="submit"
               className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white"
             >
-              Log in
+              Sign up
             </Button>
           </div>
-          <div>Don't have an account? <Link href = "/signup" className="underline">Click here to Sign-up</Link></div>
+          <div>Already have an account? <Link href = "/login" className="underline">Click here to log-in</Link></div>
         </form>
       </motion.div>
     </div>

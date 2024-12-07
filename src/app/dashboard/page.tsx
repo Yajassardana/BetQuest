@@ -11,11 +11,107 @@ import { MissedVoteOverlay } from "@/components/missed-vote-overlay"
 import { Button } from "@/components/ui/button"
 import { useGame } from "@/context/game-context"
 import { BottomNav } from "@/components/bottom-nav"
+import {useEffect} from "react"
+import {useAuth} from "@/context/auth-context"
 
 function DashboardContent() {
-  const { currentChallenge, selectedOption, hasVoted, submitVote, gamePhase } = useGame()
-
+  const { currentChallenge, selectedOption, hasVoted, submitVote, gamePhase, setGameState, gameState, intervals, resetChallenge } = useGame()
+  const {userData, setUserData} = useAuth()
   if (!currentChallenge) return null
+
+  const updateUser  = async (won: boolean) => {
+    console.log("Updating user", userData);
+    const response = await fetch(`/api/users/${userData?.uid}`, {
+      method: 'PUT',
+      body: JSON.stringify({ result : won ? 'win' : 'loss' }),
+    });
+    if (response.ok) {
+      console.log("User updated");
+    } else {
+      console.error("User data");
+    }
+  }
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+
+    // Challenge going on
+    if (gameState.timer > 0 && gameState.gamePhase === 'voting') {
+      interval = setInterval(() => {
+        setGameState(prev => ({ ...prev, timer: prev.timer - 1 }))
+      }, 1000)
+    }
+    // result computation 
+    else if (gameState.timer === 0 && gameState.gamePhase === 'voting') {
+      if (gameState.hasVoted) {
+        const won = (gameState.currentChallenge?.winnerId === gameState.selectedOption)
+        
+        setGameState(prev => ({
+          ...prev,
+          gamePhase: 'result',
+          tokens: won ? prev?.tokens + 50 : prev?.tokens - 50,
+          resultTimer: intervals.break,
+          streak: [...gameState.streak, won ? 'win' : 'loss'],
+          currentChallenge: {
+            ...prev.currentChallenge!,
+            result: won ? 'win' : 'loss'
+          }
+        }))
+
+        if(won){
+          setUserData((prev) => ({
+            ...prev,
+            tokens: prev ? prev.tokens + 50 : 50,
+            contestsWon: prev ? prev.contestsWon + 1 : 1,
+            streak: prev ? prev.streak + 1 : 1,
+            previousResults: prev ? [...prev.previousResults, 'win'] : ['win'],
+            username: prev?.username || '',
+            email: prev?.email || '',
+            contestsLost: prev?.contestsLost || 0,
+            walletAddress: prev?.walletAddress || '',
+            uid: prev?.uid || ''
+          }))
+        }
+        else{
+
+          setUserData((prev) => ({   
+            ...prev,
+            tokens: prev ? prev.tokens - 50 : 50,
+            contestsWon: prev ? prev.contestsWon : 0,
+            streak: 0,
+            previousResults: prev ? [...prev.previousResults, 'loss'] : ['loss'],
+            username: prev?.username || '',
+            email: prev?.email || '',
+            contestsLost: prev ? prev.contestsLost + 1 : 1,
+            walletAddress: prev?.walletAddress || '',
+            uid: prev?.uid || ''
+          }))
+        }
+        updateUser(won)
+      } else {
+        setGameState(prev => ({
+          ...prev,
+          gamePhase: 'missed',
+          resultTimer: intervals.break,
+        }))
+      }
+    }
+    // Break going on - either win/loss(result) or missed 
+    else if (gameState.gamePhase === 'result' || gameState.gamePhase === 'missed') {
+      interval = setInterval(() => {
+        setGameState(prev => ({ 
+          ...prev, 
+          resultTimer: prev.resultTimer > 0 ? prev.resultTimer - 1 : 0
+        }))
+      }, 1000)
+
+      if (gameState.resultTimer === 0) {
+        resetChallenge()
+      }
+    }
+
+    return () => clearInterval(interval)
+  }, [gameState.timer, gameState.gamePhase, gameState.hasVoted, gameState.resultTimer])
+
 
   return (
     <div className="flex min-h-screen flex-col pb-24">
@@ -53,7 +149,7 @@ function DashboardContent() {
         >
           <Button
             onClick={submitVote}
-            disabled={!selectedOption || hasVoted}
+            disabled={!selectedOption || !!hasVoted}
             className="w-full max-w-md bg-gradient-to-r from-purple-500 to-pink-500 text-white"
           >
             Vote Now
