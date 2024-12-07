@@ -28,3 +28,13 @@ export interface GameContextType extends GameState {
   resetChallenge: () => void
 }
 
+export interface User {
+  username : string,
+  email : string,
+  contestsWon : number,
+  contestsLost : number,
+  tokens : number,
+  streak : number,
+  previousResults : Array<boolean>,
+  walletAddress : string
+}
