@@ -19,7 +19,7 @@ export interface GameState {
   timer: number
   resultTimer : number
   streak: Array<'win' | 'loss' | 'pending'>
-  gamePhase: 'voting' | 'result' | 'loading'
+  gamePhase: 'voting' | 'result' | 'loading' | 'missed'
 }
 
 export interface GameContextType extends GameState {

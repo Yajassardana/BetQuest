@@ -7,6 +7,7 @@ import { ChallengeCard } from "@/components/challenge-card"
 import { Timer } from "@/components/timer"
 import { Streak } from "@/components/streak"
 import { ResultOverlay } from "@/components/result-overlay"
+import { MissedVoteOverlay } from "@/components/missed-vote-overlay"
 import { Button } from "@/components/ui/button"
 import { useGame } from "@/context/game-context"
 import { BottomNav } from "@/components/bottom-nav"
@@ -37,7 +38,7 @@ function DashboardContent() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="grid gap-4 md:grid-cols-2"
+          className="grid grid-cols-2 gap-4"
         >
           {currentChallenge.options.map((option) => (
             <ChallengeCard key={option.id} {...option} />
@@ -63,6 +64,7 @@ function DashboardContent() {
       </main>
 
       {gamePhase === 'result' && <ResultOverlay />}
+      {gamePhase === 'missed' && <MissedVoteOverlay />}
       <BottomNav />
     </div>
   )

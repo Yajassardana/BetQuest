@@ -11,12 +11,12 @@ const mockChallenges: Challenge[] = [
       {
         id: "1",
         name: "Virat Kohli",
-        image: "/placeholder.svg?height=200&width=200",
+        image: "/images/kohli.jpg",
       },
       {
         id: "2",
         name: "Rohit Sharma",
-        image: "/placeholder.svg?height=200&width=200",
+        image: "/images/kohli.jpg",
       },
     ],
     duration: 60,
@@ -28,12 +28,12 @@ const mockChallenges: Challenge[] = [
       {
         id: "1",
         name: "India",
-        image: "/placeholder.svg?height=200&width=200",
+        image: "/images/kohli.jpg",
       },
       {
         id: "2",
         name: "Australia",
-        image: "/placeholder.svg?height=200&width=200",
+        image: "/images/kohli.jpg",
       },
     ],
     duration: 60,
@@ -66,7 +66,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       }, 1000)
     } else if (state.timer === 0 && state.gamePhase === 'voting') {
       if (state.hasVoted) {
-        const won = true; // Replace with actual logic
+        const won = Math.random() > 0.5
         const newStreak = [...state.streak]
         const firstPendingIndex = newStreak.findIndex(s => s === 'pending')
         if (firstPendingIndex !== -1) {
@@ -77,7 +77,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
           ...prev,
           gamePhase: 'result',
           points: won ? prev.points + 100 : prev.points - 50,
-          resultTimer: 30,
+          resultTimer: 5,
           streak: newStreak,
           currentChallenge: {
             ...prev.currentChallenge!,
@@ -85,9 +85,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
           }
         }))
       } else {
-        resetChallenge()
+        setState(prev => ({
+          ...prev,
+          gamePhase: 'missed',
+          resultTimer: 5,
+          streak: [...prev.streak.slice(1), 'loss'],
+        }))
       }
-    } else if (state.gamePhase === 'result') {
+    } else if (state.gamePhase === 'result' || state.gamePhase === 'missed') {
       interval = setInterval(() => {
         setState(prev => ({ 
           ...prev, 
