@@ -31,13 +31,25 @@ function DashboardContent() {
       console.error("User data");
     }
   }
-
+  
   useEffect(() => {
     const func = async () => {
-      await login("0x07204BE2893083E6000aCd06d7Ede27cB6120953470B95D2203dEA813bb3B13A@gmail.com", "122334")
+      await login("0x00965f635e14f1b64eb60DC74eF7f418c12EA408451ceCE87d051d32E7d37171@gmail.com", "122334")
+      // const res = await fetch('/api/contracts/start_game')
+      // console.log("start game", res)
     }
     func();
    }, [])
+
+   useEffect(() => {
+    const func = async () => {
+      if (userData!=null){const res = await fetch('/api/contracts/start_game')
+        console.log("start game", res)
+      }
+      
+    }
+    func();
+   }, [userData])
 
   useEffect(() => {
     let interval: NodeJS.Timeout

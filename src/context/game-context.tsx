@@ -43,8 +43,8 @@ const mockChallenges: Challenge[] = [
 ]
 
 const intervals : Intervals = {
-  challenge: 30,
-  break: 10
+  challenge: 600,
+  break: 600
 } 
 
 
@@ -80,11 +80,12 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }))
   }
 
-  const submitVote = () => {
+  const submitVote = async () => {
     setGameState(prev => ({
       ...prev,
       hasVoted: true,
     }))
+    await fetch('/api/contracts/play_game')
   }
 
   const resetChallenge = () => {
