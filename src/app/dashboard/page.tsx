@@ -16,7 +16,7 @@ import {useAuth} from "@/context/auth-context"
 
 function DashboardContent() {
   const { currentChallenge, selectedOption, hasVoted, submitVote, gamePhase, setGameState, gameState, intervals, resetChallenge } = useGame()
-  const {userData, setUserData} = useAuth()
+  const {userData, setUserData, login} = useAuth()
   if (!currentChallenge) return null
 
   const updateUser  = async (won: boolean) => {
@@ -31,6 +31,14 @@ function DashboardContent() {
       console.error("User data");
     }
   }
+
+  useEffect(() => {
+    const func = async () => {
+      await login("0x07204BE2893083E6000aCd06d7Ede27cB6120953470B95D2203dEA813bb3B13A@gmail.com", "122334")
+    }
+    func();
+   }, [])
+
   useEffect(() => {
     let interval: NodeJS.Timeout
 

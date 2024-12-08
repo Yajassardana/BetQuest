@@ -14,7 +14,7 @@ export function Streak() {
     >
       <h3 className="text-sm font-medium text-muted-foreground">Streak</h3>
       <div className="flex gap-1">
-        {userData?.previousResults.map((result, index) => (
+        {/* {userData?.previousResults.map((result, index) => (
           <motion.div
             key={index}
             initial={{ scale: 0 }}
@@ -31,7 +31,7 @@ export function Streak() {
               }`}
             />
           </motion.div>
-        ))}
+        ))} */}
       </div>
     </motion.div>
   )

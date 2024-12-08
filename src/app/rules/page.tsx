@@ -32,7 +32,6 @@ function RulesContent() {
               <ul className="list-disc list-inside space-y-2">
                 <li>Correct prediction: +50 points</li>
                 <li>Incorrect prediction: -50 points</li>
-                <li>Streak bonus: +10 points per correct prediction in a row</li>
               </ul>
             </div>
           </div>

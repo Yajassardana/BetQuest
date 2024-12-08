@@ -82,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Create user document in Firestore
     await setDoc(doc(db, 'users', user.uid), {
       email,
+      uid : user.uid,
       ...userData,
       createdAt: new Date().toISOString(),
     })

@@ -8,20 +8,25 @@ import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import {useAuth} from "@/context/auth-context"
 import Link from 'next/link'
+import { Loader2 } from 'lucide-react'
+
 
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
   const {login, userData} = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
     const user = await login("0x07204BE2893083E6000aCd06d7Ede27cB6120953470B95D2203dEA813bb3B13A@gmail.com", "122334")
     console.log("user is", userData)
     // Here you would typically handle the login logic
     console.log("Login attempted with:", email, password)
+    setLoading(false)
     // For now, we'll just redirect to the dashboard
     router.push("/dashboard")
   }
@@ -41,12 +46,16 @@ export default function LoginPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-            >
-              Connect Wallet
-            </Button>
+            <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white" type="submit" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Connecting
+                    </>
+                  ) : (
+                    'Connect Wallet'
+                  )}
+                </Button>
           </div>
           {/* <div>Don't have an account? <Link href = "/signup" className="underline">Click here to Sign-up</Link></div> */}
         </form>

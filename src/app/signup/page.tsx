@@ -23,7 +23,7 @@ export default function LoginPage() {
       email,
       contestsWon: 0,
       contestsLost: 0,
-      tokens: 1000,
+      tokens: 0,
       streak: 0,
       previousResults: [],
       walletAddress: "0x07204BE2893083E6000aCd06d7Ede27cB6120953470B95D2203dEA813bb3B13A"

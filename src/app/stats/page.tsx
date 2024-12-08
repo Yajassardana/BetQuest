@@ -21,13 +21,13 @@ function StatsContent() {
         >
           <h2 className="text-2xl font-bold">Your Stats</h2>
           <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2">Total Points</h3>
+            <h3 className="text-xl font-semibold mb-2">Balance Tokens</h3>
             <p className="text-3xl font-bold">{userData?.tokens}</p>
           </div>
           <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2">Current Streak</h3>
+            <h3 className="text-xl font-semibold mb-2">Current Streak: {userData?.contestsWon}</h3>
             <div className="flex gap-1">
-              {userData?.previousResults.map((result, index) => (
+              {/* {userData?.previousResults.map((result, index) => (
                 <div
                   key={index}
                   className={`h-4 w-4 rounded-sm ${
@@ -38,7 +38,7 @@ function StatsContent() {
                       : 'bg-gray-700'
                   }`}
                 />
-              ))}
+              ))} */}
             </div>
           </div>
         </motion.div>
