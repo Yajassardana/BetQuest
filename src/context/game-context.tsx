@@ -16,7 +16,7 @@ const mockChallenges: Challenge[] = [
       {
         id: "2",
         name: "Rohit Sharma",
-        image: "/images/kohli.jpg",
+        image: "/images/rohit.jpg",
       },
     ],
     winnerId: "1",
@@ -29,7 +29,7 @@ const mockChallenges: Challenge[] = [
       {
         id: "1",
         name: "India",
-        image: "/images/kohli.jpg",
+        image: "/images/rohit.jpg",
       },
       {
         id: "2",
@@ -43,8 +43,8 @@ const mockChallenges: Challenge[] = [
 ]
 
 const intervals : Intervals = {
-  challenge: 15,
-  break: 5
+  challenge: 20,
+  break: 15
 } 
 
 

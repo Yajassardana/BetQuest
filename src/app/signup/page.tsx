@@ -18,7 +18,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const user = await signup(email, password, {
+    const user = await signup("0x07204BE2893083E6000aCd06d7Ede27cB6120953470B95D2203dEA813bb3B13A@gmail.com", "122334", {
       username,
       email,
       contestsWon: 0,
@@ -26,7 +26,7 @@ export default function LoginPage() {
       tokens: 1000,
       streak: 0,
       previousResults: [],
-      walletAddress: ""
+      walletAddress: "0x07204BE2893083E6000aCd06d7Ede27cB6120953470B95D2203dEA813bb3B13A"
     })
     console.log("Signup attempted with:", email, password)
     // For now, we'll just redirect to the dashboard

@@ -32,7 +32,19 @@ export function Header() {
         className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20"
       >
         <User className="w-4 h-4" />
-        <span>{userData?.username}</span>
+        <span>
+      {userData?.walletAddress && userData.walletAddress.length > 10 
+        ? `${userData.walletAddress.substring(0, 10)}...` 
+        : userData?.walletAddress}</span>
+          <span 
+      className="tooltip"
+      onClick={() => {
+        navigator.clipboard.writeText(userData?.walletAddress || '');
+        alert('Wallet address copied to clipboard');
+      }}
+          >
+      Copy
+          </span>
       </motion.button>
     </div>
   )
