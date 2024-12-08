@@ -43,7 +43,7 @@ export async function PUT(
         tokens: fetchedUserData.tokens + 50,
         contestsWon: fetchedUserData.contestsWon + 1,
         streak: fetchedUserData.streak + 1,
-        previousResults: fetchedUserData.previousResults.push('win')
+        previousResults: []
       });
     }
     else{
@@ -51,7 +51,7 @@ export async function PUT(
         tokens: fetchedUserData.tokens - 50,
         contestsLost: fetchedUserData.contestsLost + 1,
         streak: 0,
-        previousResults: fetchedUserData.previousResults.push('loss')
+        previousResults: []
       });
     }
     console.log("User updated successfully", userId)

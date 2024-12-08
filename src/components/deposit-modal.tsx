@@ -37,7 +37,7 @@ export function DepositModal({ isOpen, onClose }: DepositModalProps) {
         tokens: prev ? prev.tokens + amount : amount,
         contestsWon: prev ? prev.contestsWon : 0,
         streak: 0,
-        previousResults: prev ? prev.previousResults : [],
+        previousResults: [],
         username: prev?.username || '',
         email: prev?.email || '',
         contestsLost: prev ? prev.contestsLost  : 0,
