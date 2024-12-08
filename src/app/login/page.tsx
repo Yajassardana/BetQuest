@@ -1,22 +1,105 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import {useAuth} from "@/context/auth-context"
+import { ArgentTMA, SessionAccountInterface } from "@argent/tma-wallet";
+import { Account, Contract, AccountInterface } from "starknet";
 import Link from 'next/link'
 
 
 export default function LoginPage() {
+
+
+  const argentTMA = ArgentTMA.init({
+    environment: "sepolia", // "sepolia" | "mainnet" (not supperted yet)
+    appName: "betquest", // Your Telegram app name
+    appTelegramUrl: "https://t.me/example_bot/example", // Your Telegram app URL
+    sessionParams: {
+      allowedMethods: [
+        // List of contracts/methods allowed to be called by the session key
+        {
+          contract:
+            "contracts address",
+          selector: "function name",
+        }
+      ],
+      validityDays: 90 // session validity (in days) - default: 90
+    },
+  });
+
+  useEffect(() => {
+
+    // Call connect() as soon as the app is loaded
+    argentTMA
+      .connect()
+      .then((res) => {
+        if (!res) {
+          // Not connected
+          setIsConnected(false);
+          return;
+        }
+
+        // Connected
+        const { account, callbackData } = res;
+
+        if (account.getSessionStatus() !== "VALID") {
+          // Session has expired or scope (allowed methods) has changed
+          // A new connection request should be triggered
+          
+          // The account object is still available to get access to user's address
+          // but transactions can't be executed
+          const { account } = res;
+
+          setAccount(account);
+          setIsConnected(false);
+          return;
+        }
+
+        // Connected
+        // const { account, callbackData } = res;
+        // The session account is returned and can be used to submit transactions
+        setAccount(account);
+        setIsConnected(true);
+        // Custom data passed to the requestConnection() method is available here
+        console.log("callback data:", callbackData);
+      })
+      .catch((err) => {
+        console.error("Failed to connect", err);
+      });
+  }, []);
+
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
+  const [account, setAccount] = useState<SessionAccountInterface | undefined>();
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   const {login, userData} = useAuth()
 
+
+  const handleConnectButton = async () => {
+    // If not connected, trigger a connection request
+    // It will open the wallet and ask the user to approve the connection
+    // The wallet will redirect back to the app and the account will be available
+    // from the connect() method -- see above
+    await argentTMA.requestConnection("custom_callback_data");
+  };
+
+  // useful for debugging
+  const handleClearSessionButton = async () => {
+    await argentTMA.clearSession();
+    setAccount(undefined);
+  };
+
+  console.log(account)
+
   const handleSubmit = async (e: React.FormEvent) => {
+    handleConnectButton()
     e.preventDefault()
     const user = await login(email, password)
     console.log("user is", userData)
