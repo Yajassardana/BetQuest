@@ -101,12 +101,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     handleConnectButton()
     e.preventDefault()
-    const user = await login(email, password)
+   // const user = await login(email, password)
     console.log("user is", userData)
     // Here you would typically handle the login logic
     console.log("Login attempted with:", email, password)
     // For now, we'll just redirect to the dashboard
-    router.push("/dashboard")
+    // router.push("/dashboard")
   }
 
   return (
