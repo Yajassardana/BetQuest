@@ -49,7 +49,7 @@ function DashboardContent() {
       
     }
     func();
-   }, [userData])
+   }, [])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
